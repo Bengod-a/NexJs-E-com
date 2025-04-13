@@ -1,215 +1,3 @@
-// "use client";
-
-// import React, { useState } from "react";
-// import Header from "../../components/Nav/Navbar";
-// import { toast } from "react-toastify";
-// import { useRouter } from "next/navigation";
-
-// const RegisterPage = () => {
-//   const [formregister, setFormregister] = useState({
-//     username: "" as string,
-//     lastname: "" as string,
-//     email: "" as string,
-//     phonenumber: "" as string,
-//     password: "" as string,
-//     conpassword: "" as string,
-//   });
-
-//   const router = useRouter();
-
-//   const handleSubmit = async (e: any) => {
-//     e.preventDefault();
-//     try {
-//       const res = await fetch("http://localhost:8080/register", {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify(formregister),
-//       });
-
-//       const data = await res.json();
-//       if (!res.ok) {
-//         toast.error(data.message);
-//       } else {
-//         toast.success("สมัครสมาชิกสำเร็จ");
-//         router.push("/");
-//       }
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
-
-//   return (
-//     <>
-//       <Header />
-
-//       <div className="mt-10 w-full px-4 sm:px-6 lg:px-8">
-//         <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-1 gap-6">
-//           <div className="bg-white w-full max-w-[750px] mx-auto shadow-md rounded-lg">
-//             <div className="flex items-center justify-center py-6">
-//               <h1 className="text-red-500 font-extrabold text-2xl sm:text-3xl">
-//                 ลงทะเบียน
-//               </h1>
-//             </div>
-
-//             <form
-//               className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 sm:p-6"
-//               action=""
-//             >
-//               <div className="flex flex-col">
-//                 <label
-//                   htmlFor="firstName"
-//                   className="text-sm font-medium text-gray-700"
-//                 >
-//                   ชื่อ
-//                 </label>
-//                 <input
-//                   className="mt-1 border border-gray-300 shadow-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 w-full"
-//                   type="text"
-//                   name="firstName"
-//                   id="firstName"
-//                   placeholder="ชื่อ"
-//                   onChange={(e) =>
-//                     setFormregister({
-//                       ...formregister,
-//                       username: e.target.value,
-//                     })
-//                   }
-//                 />
-//               </div>
-
-//               <div className="flex flex-col">
-//                 <label
-//                   htmlFor="lastName"
-//                   className="text-sm font-medium text-gray-700"
-//                 >
-//                   นามสกุล
-//                 </label>
-//                 <input
-//                   className="mt-1 border border-gray-300 shadow-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 w-full"
-//                   type="text"
-//                   name="lastName"
-//                   id="lastName"
-//                   placeholder="นามสกุล"
-//                   onChange={(e) =>
-//                     setFormregister({
-//                       ...formregister,
-//                       lastname: e.target.value,
-//                     })
-//                   }
-//                 />
-//               </div>
-
-//               <div className="flex flex-col">
-//                 <label
-//                   htmlFor="phone"
-//                   className="text-sm font-medium text-gray-700"
-//                 >
-//                   เบอร์โทรศัพท์
-//                 </label>
-//                 <input
-//                   className="mt-1 border border-gray-300 shadow-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 w-full"
-//                   type="tel"
-//                   name="phone"
-//                   id="phone"
-//                   placeholder="เบอร์โทรศัพท์"
-//                   onChange={(e) =>
-//                     setFormregister({
-//                       ...formregister,
-//                       phonenumber: e.target.value,
-//                     })
-//                   }
-//                 />
-//               </div>
-//             </form>
-
-//             {/* form2 */}
-//             <form
-//               className="flex flex-col gap-4 p-4 sm:p-6"
-//               onSubmit={handleSubmit}
-//             >
-//               <div className="flex flex-col">
-//                 <label
-//                   htmlFor="email"
-//                   className="text-sm font-medium text-gray-700"
-//                 >
-//                   อีเมล
-//                 </label>
-//                 <input
-//                   className="mt-1 border border-gray-300 shadow-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 w-full"
-//                   type="email"
-//                   name="email"
-//                   id="email"
-//                   placeholder="อีเมล"
-//                   onChange={(e) =>
-//                     setFormregister({ ...formregister, email: e.target.value })
-//                   }
-//                 />
-//               </div>
-
-//               <div className="flex flex-col">
-//                 <label
-//                   htmlFor="password"
-//                   className="text-sm font-medium text-gray-700"
-//                 >
-//                   รหัสผ่าน
-//                 </label>
-//                 <input
-//                   className="mt-1 border border-gray-300 shadow-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 w-full"
-//                   type="text"
-//                   name="password"
-//                   id="password"
-//                   placeholder="รหัสผ่าน"
-//                   onChange={(e) =>
-//                     setFormregister({
-//                       ...formregister,
-//                       password: e.target.value,
-//                     })
-//                   }
-//                 />
-//               </div>
-
-//               <div className="flex flex-col">
-//                 <label
-//                   htmlFor="conpassword"
-//                   className="text-sm font-medium text-gray-700"
-//                 >
-//                   ยืนยันรหัสผ่าน
-//                 </label>
-//                 <input
-//                   className="mt-1 border border-gray-300 shadow-sm p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-600 w-full"
-//                   type="text"
-//                   name="conpassword"
-//                   id="conpassword"
-//                   placeholder="ยืนยันรหัสผ่าน"
-//                   onChange={(e) =>
-//                     setFormregister({
-//                       ...formregister,
-//                       conpassword: e.target.value,
-//                     })
-//                   }
-//                 />
-//               </div>
-
-//               <div className="md:col-span-2 flex justify-center mt-4">
-//                 <button
-//                   type="submit"
-//                   className="bg-red-500 text-white px-6 py-2 rounded-md hover:bg-red-600 transition w-full sm:w-auto"
-//                 >
-//                   สมัครสมาชิก
-//                 </button>
-//               </div>
-//             </form>
-//           </div>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default RegisterPage;
-
 "use client";
 
 import React, { useState } from "react";
@@ -263,12 +51,10 @@ const RegisterPage = () => {
           <p className="mt-2 text-gray-600">กรอกข้อมูลเพื่อสมัครสมาชิกในระบบ</p>
         </header>
 
-        {/* ฟอร์มสมัครสมาชิก */}
         <div className="max-w-4xl mx-auto">
           <div className="bg-white p-8 rounded-xl shadow-md border border-gray-200">
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* ชื่อ */}
                 <div className="relative">
                   <label
                     htmlFor="firstName"
@@ -298,7 +84,6 @@ const RegisterPage = () => {
                   </div>
                 </div>
 
-                {/* นามสกุล */}
                 <div className="relative">
                   <label
                     htmlFor="lastName"
@@ -328,7 +113,6 @@ const RegisterPage = () => {
                   </div>
                 </div>
 
-                {/* เบอร์โทรศัพท์ */}
                 <div className="relative">
                   <label
                     htmlFor="phone"
@@ -358,7 +142,6 @@ const RegisterPage = () => {
                   </div>
                 </div>
 
-                {/* อีเมล */}
                 <div className="relative">
                   <label
                     htmlFor="email"
@@ -388,7 +171,6 @@ const RegisterPage = () => {
                   </div>
                 </div>
 
-                {/* รหัสผ่าน */}
                 <div className="relative">
                   <label
                     htmlFor="password"
@@ -418,7 +200,6 @@ const RegisterPage = () => {
                   </div>
                 </div>
 
-                {/* ยืนยันรหัสผ่าน */}
                 <div className="relative">
                   <label
                     htmlFor="conpassword"
@@ -449,7 +230,6 @@ const RegisterPage = () => {
                 </div>
               </div>
 
-              {/* ปุ่มสมัครสมาชิก */}
               <div className="flex justify-center mt-8">
                 <button
                   type="submit"

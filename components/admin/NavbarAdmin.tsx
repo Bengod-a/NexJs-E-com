@@ -41,7 +41,7 @@ const NavBarAdmin = () => {
         <button
           onClick={toggleSidebar}
           type="button"
-          className="fixed top-4 left-4 z-50 p-2 text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+          className="fixed top-4 left-4 z-50  p-2 text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
         >
           <span className="sr-only">เปิด/ปิดเมนู</span>
           <Icon icon="mdi:menu" width="24" height="24" />
@@ -50,7 +50,7 @@ const NavBarAdmin = () => {
 
       {isSidebarOpen && (
         <div
-          className="fixed inset-0  bg-opacity-50 z-30"
+          className="fixed inset-0 backdrop-blur-xs  bg-opacity-50 z-30"
           onClick={toggleSidebar}
         />
       )}
@@ -58,13 +58,26 @@ const NavBarAdmin = () => {
       <aside
         ref={sidebarRef}
         id="sidebar-multi-level-sidebar"
-        className={`fixed top-0 left-0 z-40 w-64 h-screen transition-transform ${
+        className={`fixed top-0  transition-all left-0 z-40 w-64 h-screen duration-500 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         aria-label="Sidebar"
       >
-        <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
-          <ul className="space-y-2 font-medium">
+        <div className="h-full  px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+          <div className="flex items-center justify-center">
+            <h1 className="text-2xl flex items-center gap-2 font-bold">
+              <Icon
+                icon="mdi:cart-outline"
+                width="24"
+                height="24"
+                color="white"
+              />
+              <span className="text-white flex">
+                BE. <span className="text-gray-500">N</span>
+              </span>
+            </h1>
+          </div>
+          <ul className="space-y-2 mt-10 font-medium">
             <li>
               <Link
                 href="/admin"
@@ -129,7 +142,11 @@ const NavBarAdmin = () => {
                     href="/admin/category"
                     className="flex gap-2 items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                   >
-                    <Icon icon="carbon:collapse-categories" width="24" height="24" />
+                    <Icon
+                      icon="carbon:collapse-categories"
+                      width="24"
+                      height="24"
+                    />
                     เพิ่มหมวดหมู่
                   </Link>
                 </li>
@@ -138,7 +155,11 @@ const NavBarAdmin = () => {
                     href="/admin/orders"
                     className="flex gap-2 items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                   >
-                    <Icon icon="lsicon:order-done-filled" width="24" height="24" />
+                    <Icon
+                      icon="lsicon:order-done-filled"
+                      width="24"
+                      height="24"
+                    />
                     คำสั่งซื้อ
                   </Link>
                 </li>

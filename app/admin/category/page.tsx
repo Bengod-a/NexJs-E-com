@@ -2,7 +2,7 @@
 
 interface Category {
   ID: number;
-  icon: string
+  icon: string;
   name: string;
   products: { id: number }[];
   createdAt: string;
@@ -70,8 +70,6 @@ const AddCategory = () => {
     }
   };
 
-  
-
   useEffect(() => {
     getcategory();
   }, []);
@@ -90,47 +88,78 @@ const AddCategory = () => {
           <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
             <form
               onSubmit={hdlSubmit}
-              className="grid md:grid-cols-2 grid-cols-1 justify-center items-center gap-4"
+              className="grid grid-cols-1 md:grid-cols-2 gap-6"
             >
-              <div className="flex-1">
+              <div className="relative">
                 <label
                   htmlFor="categoryName"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  className="block text-sm font-medium text-gray-700 mb-1"
                 >
                   ชื่อหมวดหมู่
                 </label>
-                <input
-                  id="categoryName"
-                  type="text"
-                  value={categoryName}
-                  onChange={(e) => setCategoryName(e.target.value)}
-                  placeholder="เช่น เสื้อผ้า, อิเล็กทรอนิกส์"
-                  className="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400"
-                />
+                <div className="relative">
+                  <input
+                    id="categoryName"
+                    name="categoryName"
+                    type="text"
+                    value={categoryName}
+                    onChange={(e) => setCategoryName(e.target.value)}
+                    placeholder="ชื่อหมวดหมู่"
+                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 transition duration-200"
+                    required
+                  />
+                  <Icon
+                    icon="mdi:tag"
+                    width="20"
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  />
+                </div>
               </div>
-              <div className="flex-1">
+
+              <div className="relative">
                 <label
-                  htmlFor="categoryName"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+                  htmlFor="icon"
+                  className="block text-sm font-medium text-gray-700 mb-1"
                 >
-                  ชื่อIcon
+                  ไอคอน (Iconify)
                 </label>
-                <input
-                  id="icon"
-                  type="text"
-                  value={icon}
-                  onChange={(e) => setIcon(e.target.value)}
-                  placeholder="icon จาก iconify react"
-                  className="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400"
-                />
+                <div className="relative">
+                  <input
+                    id="icon"
+                    name="icon"
+                    type="text"
+                    value={icon}
+                    onChange={(e) => setIcon(e.target.value)}
+                    placeholder="เช่น bi:gpu-card"
+                    className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 transition duration-200"
+                    required
+                  />
+                  <Icon
+                    icon={icon || "mdi:tag"}
+                    width="20"
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  />
+                </div>
+                <p className="mt-1 text-sm text-gray-500">
+                  ใช้รหัสไอคอนจาก
+                  <a
+                    href="https://icon-sets.iconify.design/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    Iconify
+                  </a>
+                  (เช่น "mdi:tag", "bi:gpu-card")
+                </p>
               </div>
-              <button
-                type="submit"
-                className="px-5 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center gap-2 transition-colors duration-200"
-              >
-                <Icon icon="mdi:plus" width="20" />
-                เพิ่มหมวดหมู่
-              </button>
+                <button
+                  type="submit"
+                  className="px-5 py-3 text-end bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center gap-2 transition-colors duration-200"
+                >
+                  <Icon icon="mdi:plus" width="20" />
+                  เพิ่มหมวดหมู่
+                </button>
             </form>
           </div>
         </div>
@@ -143,7 +172,7 @@ const AddCategory = () => {
               {categories.map((item) => (
                 <Link
                   key={item.ID}
-                  href={`/category/${item.ID}`}
+                  href={`/admin/category/${item.ID}`}
                   className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow duration-200"
                 >
                   <div className="flex items-center gap-4">

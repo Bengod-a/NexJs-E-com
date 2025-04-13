@@ -26,7 +26,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-400`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#f6f9fc]`}
       >
         {children}
         <ToastContainer />

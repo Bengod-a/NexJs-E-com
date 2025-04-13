@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Nav/Navbar";
 import { isTokenExpired } from "../middleware";
+import Hero from "../components/Nav/Hero/Hero";
+import NewProduct from "../components/Nav/Hero/NewProduct";
 
 export default function Home() {
   const [token, setToken] = useState<string | null>(null);
@@ -19,5 +21,11 @@ export default function Home() {
     setToken(storedToken);
   }, []);
 
-  return <Navbar />;
+  return (
+    <>
+      <Navbar />
+      <Hero />
+      <NewProduct />
+    </>
+  );
 }

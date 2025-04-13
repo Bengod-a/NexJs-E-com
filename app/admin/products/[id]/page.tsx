@@ -20,6 +20,7 @@ const EditProductPage = () => {
   });
   const [categories, setCategories] = useState([]) as any;
   const [imageFiles, setImageFiles] = useState([]);
+  const [specs, setSpecs] = useState([]);
   const [isupload, setIsupload] = useState(false);
   const [imageUrl, setImageUrl] = useState<string[]>([]);
   const [existingImages, setExistingImages] = useState([]);
@@ -35,8 +36,10 @@ const EditProductPage = () => {
       });
 
       const data = await res.json();
+      setSpecs(data.specs);
       if (data && data.data && data.data.length > 0) {
         const product = data.data[0];
+        setSpecs(product.specs);
         setProductData({
           name: product.name || "",
           price: product.price ? product.price.toString() : "",
@@ -48,14 +51,12 @@ const EditProductPage = () => {
         setExistingImages(product.images || []);
       } else {
         toast.error("ไม่พบสินค้า");
-        router.push("/admin/products");
       }
     } catch (error) {
       console.log(error);
-      toast.error("เกิดข้อผิดพลาดในการโหลดข้อมูลสินค้า");
-      router.push("/admin/products");
     }
   };
+
 
   const getCategories = async () => {
     try {
@@ -85,8 +86,8 @@ const EditProductPage = () => {
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
-    setProductData((prev) => ({
-      ...prev,
+    setProductData((e) => ({
+      ...e,
       [name]: value,
     }));
   };
@@ -478,6 +479,33 @@ const EditProductPage = () => {
                 </div>
               </div>
             )}
+            <div className="mt-10">
+              <h1 className="text-2xl font-bold text-gray-900">
+                คุณสมบัติสินค้า
+              </h1>
+              {specs ? (
+                specs.map((specs: any, index) => (
+                  <div key={index} className="flex mt-5 items-center gap-2">
+                    <input
+                      type="text"
+                      placeholder="Key"
+                      value={specs.key}
+                      readOnly
+                      className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Value"
+                      value={specs.value}
+                      readOnly
+                      className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                    />
+                  </div>
+                ))
+              ) : (
+                <div>ไม่ได้เพิ่มคุณสมบัติสินค้า</div>
+              )}
+            </div>
           </div>
         </div>
       </div>

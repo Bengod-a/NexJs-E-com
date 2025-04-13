@@ -14,6 +14,11 @@ interface Category {
   name: string;
 }
 
+type Specs = {
+  key: string;
+  value: string;
+};
+
 const page = () => {
   const [productData, setProductData] = useState({
     name: "",
@@ -26,6 +31,12 @@ const page = () => {
   const [isupload, setIsupload] = useState(false);
   const [newproduct, setNewproduct] = useState<any[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [specs, setSpecs] = useState<Specs[]>([{ key: "", value: "" }]);
+  const [rawText, setRawText] = useState("");
+
+  console.log(specs);
+  
+
   const user = useStore((s) => s.user);
 
   const handleChange = (e: any) => {
@@ -63,6 +74,7 @@ const page = () => {
       formData.append("price", productData.price);
       formData.append("categoryId", productData.categoryId);
       formData.append("quantity", productData.quantity);
+      formData.append("envs", JSON.stringify(specs));
       formData.append("userId", user?.id as any);
       if (imageUrl) {
         imageUrl.forEach((file: any) => {
@@ -155,6 +167,51 @@ const page = () => {
     } catch (error) {
       console.error(error);
       toast.error("เกิดข้อผิดพลาดในการลบรูปภาพ");
+    }
+  };
+
+  //---------->  แปลงเป็น Key / Value ----------> //
+  const handleChangeSpecs = (
+    index: number,
+    field: keyof Specs,
+    value: string
+  ) => {
+    const newEnvs = [...specs];
+    newEnvs[index][field] = value;
+    setSpecs(newEnvs);
+  };
+
+  const addRow = () => setSpecs([...specs, { key: "", value: "" }]);
+
+  const removeRow = (index: number) => {
+    const newEnvs = [...specs];
+    newEnvs.splice(index, 1);
+    setSpecs(newEnvs);
+  };
+
+  const parseEnvText = (input: string): Specs[] => {
+    return input
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => {
+        const [key, ...rest] = line.split(/\s{2,}|\t|:/);
+        return { key: key.trim(), value: rest.join(" ").trim() };
+      });
+  };
+
+  const importFromText = () => {
+    const parsed = parseEnvText(rawText);
+    if (parsed.length > 0) setSpecs(parsed);
+  };
+
+
+  const isValidUrl = (url: string) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (e) {
+      return false;
     }
   };
 
@@ -342,27 +399,121 @@ const page = () => {
                   ) : (
                     imageUrl.length > 0 && (
                       <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 gap-4">
-                        {imageUrl.map((url: string, index: number) => (
-                          <div key={index} className="relative">
-                            <Image
-                              width={100}
-                              height={100}
-                              src={url}
-                              alt={`ตัวอย่างรูปภาพ ${index + 1}`}
-                              className="w-full h-32 object-cover rounded-md border border-gray-200"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => handleRemoveImage(index)}
-                              className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
-                            >
-                              <Icon icon="mdi:close" width="16" />
-                            </button>
-                          </div>
-                        ))}
+                        {imageUrl.map((url: string, index: number) =>
+                          isValidUrl(url) ? (
+                            <div key={index} className="relative">
+                              <Image
+                                width={100}
+                                height={100}
+                                src={url}
+                                alt={`ตัวอย่างรูปภาพ ${index + 1}`}
+                                className="w-full h-32 object-cover rounded-md border border-gray-200"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveImage(index)}
+                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                              >
+                                <Icon icon="mdi:close" width="16" />
+                              </button>
+                            </div>
+                          ) : (
+                            <div key={index} className="relative">
+                              <span className="text-red-500">
+                                URL ไม่ถูกต้อง
+                              </span>
+                            </div>
+                          )
+                        )}
                       </div>
                     )
                   )}
+                </div>
+                <div className="relative">
+                  <label
+                    htmlFor="imageUrl"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    หรือ(URL)ของรูปภาพ (ใส่หลายรูปคั่นด้วยเครื่องหมาย ,)
+                  </label>
+                  <div className="relative">
+                    <textarea
+                      id="imageUrl"
+                      name="imageUrl"
+                      rows={9}
+                      onChange={(e: any) => {
+                        const urls: string[] = e.target.value
+                          .split(",")
+                          .map((url: string) => url.trim());
+                        setImageUrl(urls);
+                      }}
+                      value={imageUrl.join(", ")}
+                      placeholder="(URL)ของรูปภาพ - ใส่หลายรูปคั่นด้วยเครื่องหมาย ,"
+                      className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 transition duration-200"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  คุณสมบัติสินค้า
+                </h1>
+              </div>
+              <div className="space-y-6">
+                <textarea
+                  rows={6}
+                  placeholder={`วางข้อมูลแบบนี้:\nScreen Size\t6.67 inch\nChip\tSnapdragon 6 Gen 4`}
+                  value={rawText}
+                  onChange={(e) => setRawText(e.target.value)}
+                  className="w-full p-3 border rounded-md font-mono"
+                />
+                <button
+                  onClick={importFromText}
+                  type="button"
+                  className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700"
+                >
+                   แปลงเป็น Key / Value
+                </button>
+
+                <div className="space-y-4">
+                  {specs.map((specs, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        placeholder="Key"
+                        value={specs.key}
+                        onChange={(e) =>
+                          handleChangeSpecs(index, "key", e.target.value)
+                        }
+                        className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Value"
+                        value={specs.value}
+                        onChange={(e) =>
+                          handleChangeSpecs(index, "value", e.target.value)
+                        }
+                        className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeRow(index)}
+                        className="text-red-500 hover:underline"
+                      >
+                        ลบ
+                      </button>
+                    </div>
+                  ))}
+                  <div className="flex justify-between">
+                    <button
+                      type="button"
+                      onClick={addRow}
+                      className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    >
+                      + เพิ่มแถว
+                    </button>
+                  </div>
                 </div>
               </div>
 

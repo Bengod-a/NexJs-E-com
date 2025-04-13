@@ -3,21 +3,16 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import { Favorite } from "@prisma/client";
 
-
 interface User {
   id: number;
   email: string;
-  name: string;
+  username: string;
   role: string;
+  lastname: string;
   image?: string;
   enabled: boolean;
   favorite: Favorite[];
-} 
-
-interface Store {
-  user: User | null; 
-  token: string | null;
-  actionLogin: (email: string, password: string, setIsopen: any) => Promise<any>;
+  phonenumber: string;
 }
 
 
@@ -41,8 +36,8 @@ const store = (set: any) => ({
       setIsopen(false);
       set({
         user: data.user,
-        token: data.user.token
-      })
+        token: data.token,
+      });
     } else {
       const data = await res.json();
       toast.error(data.message);

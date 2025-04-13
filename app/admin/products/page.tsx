@@ -141,7 +141,7 @@ const ProductListPage = () => {
                     </td>
                   </tr>
                 ) : (
-                  products.map((product: any) => (
+                  products.map((product: any, i) => (
                     <tr key={product.ID} className="hover:bg-gray-50">
                       <td className="px-6 py-4">
                         {product.images && product.images.length > 0 ? (

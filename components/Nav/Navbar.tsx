@@ -1,9 +1,12 @@
+"use client";
+
 import { Icon } from "@iconify/react/dist/iconify.js";
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import Modal from "./Modal";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import useStore from "../../store/store";
 
 export default function Header() {
@@ -11,12 +14,10 @@ export default function Header() {
   const [isopen, setIsopen] = useState(false);
   const user = useStore((s) => s.user);
 
-
   const handleSearch = (e: any) => {
     e.preventDefault();
     console.log("Search for:", searchQuery);
   };
-
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -28,31 +29,51 @@ export default function Header() {
     <header className="border-b border-gray-200">
       <div className="flex items-center justify-between p-4 max-w-7xl mx-auto">
         <Link href="/">
-          <h1 className="text-2xl font-bold">
+          <motion.h1
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4 }}
+            className="text-2xl font-bold"
+          >
             <span className="text-black">BE.</span>
             <span className="text-gray-500">N</span>
-          </h1>
+          </motion.h1>
         </Link>
 
         <form onSubmit={handleSearch} className="w-[500px] mt-2 sm:mt-0">
-          <div className="relative">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+            className="flex items-center justify-center"
+          >
             <input
               type="text"
               placeholder="ค้นหาสินค้า"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-[500px] py-2 px-4 pl-10 border-none shadow bg-gray-100 text-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-600"
+              className="w-[500px] py-2 px-4 pl-10 border-b-1 focus:border-b-2 border-b-gray-300 text-gray-600 focus:outline-none focus:border-b-red-500 transition-colors duration-300"
             />
-            <Icon
-              icon="material-symbols-light:search-rounded"
-              width="24"
-              height="24"
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-600"
-            />
-          </div>
+            <button
+              type="submit"
+              className="bg-red-600 p-2 flex items-center justify-center rounded-md cursor-pointer hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 shadow-md"
+            >
+              <Icon
+                icon="material-symbols-light:search-rounded"
+                width="24"
+                height="24"
+                className="text-white"
+              />
+            </button>
+          </motion.div>
         </form>
 
-        <div className="flex items-center gap-4">
+        <motion.div
+          initial={{ opacity: 0, x: 10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 1 }}
+          className="flex items-center gap-4"
+        >
           {!user && (
             <>
               <button
@@ -82,8 +103,8 @@ export default function Header() {
                   ) : (
                     <div className="w-[35px] h-[35px] rounded-full bg-gray-200 flex items-center justify-center">
                       <p className="text-gray-600 font-medium text-center">
-                        {user?.name
-                          ? user?.name.replace(/\s/g, "").slice(0, 2)
+                        {user?.username
+                          ? user?.username.replace(/\s/g, "").slice(0, 2)
                           : ""}
                       </p>
                     </div>
@@ -96,7 +117,7 @@ export default function Header() {
               >
                 <MenuItem>
                   <a
-                    href="#"
+                    href="/user/profile/overview"
                     className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
                   >
                     บัญชีของฉัน
@@ -111,9 +132,10 @@ export default function Header() {
                   </a>
                 </MenuItem>
                 <MenuItem>
-                  <button 
-                  onClick={handleLogout}
-                  className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden">
+                  <button
+                    onClick={handleLogout}
+                    className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
+                  >
                     ออกจากระบบ
                   </button>
                 </MenuItem>
@@ -134,10 +156,15 @@ export default function Header() {
               </span>
             </div>
           </button>
-        </div>
+        </motion.div>
       </div>
 
-      <nav className="max-w-7xl mx-auto p-2">
+      <motion.nav
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 1 }}
+        className="max-w-7xl mx-auto p-2"
+      >
         <ul className="flex space-x-6 text-sm">
           <li>
             <Link href="/products" className="hover:text-red-600">
@@ -170,7 +197,7 @@ export default function Header() {
             </Link>
           </li>
         </ul>
-      </nav>
+      </motion.nav>
     </header>
   );
 }
