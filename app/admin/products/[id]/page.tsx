@@ -14,6 +14,7 @@ const EditProductPage = () => {
 
   const [productData, setProductData] = useState({
     name: "",
+    description: "",
     price: "",
     quantity: "",
     categoryId1: "",
@@ -44,6 +45,7 @@ const EditProductPage = () => {
         setSpecs(product.specs);
         setProductData({
           name: product.name || "",
+          description: product.description || "",
           price: product.price ? product.price.toString() : "",
           quantity: product.quantity ? product.quantity.toString() : "",
           categoryId1: product.categories1[0]?.ID
@@ -211,6 +213,7 @@ const EditProductPage = () => {
     try {
       const formData = new FormData();
       formData.append("name", productData.name);
+      formData.append("description", productData.description);
       formData.append("price", productData.price);
       formData.append("quantity", productData.quantity);
       formData.append("categoryId1", productData.categoryId1);
@@ -272,6 +275,31 @@ const EditProductPage = () => {
                       onChange={handleChange}
                       placeholder="ชื่อสินค้า"
                       className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 transition duration-200"
+                      required
+                    />
+                    <Icon
+                      icon="mdi:package-variant-closed"
+                      width="20"
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    />
+                  </div>
+                </div>
+                <div className="relative">
+                  <label
+                    htmlFor="description"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Description
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="description"
+                      name="description"
+                      type="text"
+                      value={productData.description}
+                      onChange={handleChange}
+                      placeholder="Description"
+                      className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 transition duration-200"
                       required
                     />
                     <Icon
@@ -496,6 +524,30 @@ const EditProductPage = () => {
                       </div>
                     )
                   )}
+                </div>
+                <div className="relative">
+                  <label
+                    htmlFor="imageUrl"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    หรือ(URL)ของรูปภาพ (ใส่หลายรูปคั่นด้วยเครื่องหมาย ,)
+                  </label>
+                  <div className="relative">
+                    <textarea
+                      id="imageUrl"
+                      name="imageUrl"
+                      rows={9}
+                      onChange={(e: any) => {
+                        const urls: string[] = e.target.value
+                          .split(",")
+                          .map((url: string) => url.trim());
+                        setImageUrl(urls);
+                      }}
+                      value={imageUrl.join(", ")}
+                      placeholder="(URL)ของรูปภาพ - ใส่หลายรูปคั่นด้วยเครื่องหมาย ,"
+                      className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 transition duration-200"
+                    />
+                  </div>
                 </div>
               </div>
 

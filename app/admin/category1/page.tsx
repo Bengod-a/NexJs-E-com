@@ -175,7 +175,7 @@ const AddCategory = () => {
               {categories.map((item) => (
                 <Link
                   key={item.ID}
-                  href={`/admin/category/${item.ID}`}
+                  href={`/admin/category1/${item.ID}`}
                   className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow duration-200"
                 >
                   <div className="flex items-center gap-4">

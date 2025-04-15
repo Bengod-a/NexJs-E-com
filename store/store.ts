@@ -13,6 +13,7 @@ interface User {
   enabled: boolean;
   favorite: Favorite[];
   phonenumber: string;
+  address: []
 }
 
 
@@ -31,6 +32,7 @@ const store = (set: any) => ({
 
     if (res.ok) {
       const data = await res.json();
+      console.log(data);
       localStorage.setItem("token", data.token);
       toast.success(data.message);
       setIsopen(false);

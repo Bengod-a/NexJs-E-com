@@ -32,6 +32,7 @@ const Page = () => {
   });
   const path = usePathname();
 
+
   const hdlSubmit = async (e: any) => {
     e.preventDefault();
     try {
@@ -52,7 +53,14 @@ const Page = () => {
       });
       const resdata = await res.json();
       if (res.ok) {
+        useStore.setState((s: any) => ({
+          user: {
+            ...s.user,
+            address: [...(s.user.address || []), resdata.data],
+          },
+        }));
         toast.success(resdata.message);
+        router.push('/user/profile/address')
       } else {
         toast.error(resdata.message);
       }
@@ -61,8 +69,6 @@ const Page = () => {
       console.log(error);
     }
   };
-
-  console.log(data);
 
   const GetData = () => {
     GetProvince()

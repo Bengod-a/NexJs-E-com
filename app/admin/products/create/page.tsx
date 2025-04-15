@@ -22,6 +22,7 @@ type Specs = {
 const page = () => {
   const [productData, setProductData] = useState({
     name: "",
+    description: "",
     price: "",
     categoryId1: "",
     categoryId2: "",
@@ -89,6 +90,7 @@ const page = () => {
     try {
       const formData = new FormData();
       formData.append("name", productData.name);
+      formData.append("description", productData.description);
       formData.append("price", productData.price);
       formData.append("categoryId1", productData.categoryId1);
       formData.append("categoryId2", productData.categoryId2);
@@ -113,6 +115,7 @@ const page = () => {
         toast.success("เพิ่มสินค้าสำเร็จ!");
         setProductData({
           name: "",
+          description: "",
           price: "",
           categoryId1: "",
           categoryId2: "",
@@ -269,6 +272,31 @@ const page = () => {
                       value={productData.name}
                       onChange={handleChange}
                       placeholder="ชื่อสินค้า"
+                      className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 transition duration-200"
+                      required
+                    />
+                    <Icon
+                      icon="mdi:package-variant-closed"
+                      width="20"
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                    />
+                  </div>
+                </div>
+                <div className="relative">
+                  <label
+                    htmlFor="description"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Description
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="description"
+                      name="description"
+                      type="text"
+                      value={productData.description}
+                      onChange={handleChange}
+                      placeholder="Description"
                       className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 transition duration-200"
                       required
                     />
