@@ -103,7 +103,7 @@ const Page = () => {
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="w-[460px] mx-auto backdrop-blur-sm rounded-xl p-6 shadow-lg relative overflow-hidden border border-transparent"
+              className="md:w-[460px] w-[350px]  mx-auto backdrop-blur-sm rounded-xl p-6 shadow-lg relative overflow-hidden border border-transparent"
               style={{
                 background: "rgba(255, 255, 255, 0.1)",
               }}

@@ -23,19 +23,18 @@ const page = () => {
   const [productData, setProductData] = useState({
     name: "",
     price: "",
-    categoryId: "",
+    categoryId1: "",
+    categoryId2: "",
     userId: "",
     quantity: "",
   });
   const [imageUrl, setImageUrl] = useState<string[]>([]);
   const [isupload, setIsupload] = useState(false);
   const [newproduct, setNewproduct] = useState<any[]>([]);
+  const [categories1, setCategories1] = useState<Category[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [specs, setSpecs] = useState<Specs[]>([{ key: "", value: "" }]);
   const [rawText, setRawText] = useState("");
-
-  console.log(specs);
-  
 
   const user = useStore((s) => s.user);
 
@@ -45,6 +44,25 @@ const page = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const getcategory1 = async () => {
+    try {
+      const res = await fetch("http://localhost:8080/category1", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCategories1(data.data);
+      } else {
+        console.log(data.error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getcategory = async () => {
@@ -72,7 +90,8 @@ const page = () => {
       const formData = new FormData();
       formData.append("name", productData.name);
       formData.append("price", productData.price);
-      formData.append("categoryId", productData.categoryId);
+      formData.append("categoryId1", productData.categoryId1);
+      formData.append("categoryId2", productData.categoryId2);
       formData.append("quantity", productData.quantity);
       formData.append("envs", JSON.stringify(specs));
       formData.append("userId", user?.id as any);
@@ -95,7 +114,8 @@ const page = () => {
         setProductData({
           name: "",
           price: "",
-          categoryId: "",
+          categoryId1: "",
+          categoryId2: "",
           userId: "",
           quantity: "",
         });
@@ -205,7 +225,6 @@ const page = () => {
     if (parsed.length > 0) setSpecs(parsed);
   };
 
-
   const isValidUrl = (url: string) => {
     try {
       new URL(url);
@@ -216,6 +235,7 @@ const page = () => {
   };
 
   useEffect(() => {
+    getcategory1();
     getcategory();
   }, []);
 
@@ -286,25 +306,79 @@ const page = () => {
                     />
                   </div>
                 </div>
-
+                {/* หมวดหมู่หลัก */}
                 <div className="relative">
                   <label
-                    htmlFor="categoryId"
+                    htmlFor="categoryId1"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    หมวดหมู่
+                    หมวดหมู่หลัก
                   </label>
                   <div className="relative">
                     <div className="relative">
                       <select
-                        id="categoryId"
-                        name="categoryId"
-                        value={productData.categoryId}
+                        id="categoryId1"
+                        name="categoryId1"
+                        value={productData.categoryId1}
                         onChange={handleChange}
                         className="w-full pl-10 pr-10 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 appearance-none transition duration-200 bg-white"
                         required
                       >
-                        <option value="">เลือกหมวดหมู่</option>
+                        <option value="">เลือกหมวดหมู่(หลัก)</option>
+                        {categories1.length > 0 &&
+                          categories1.map((item) => (
+                            <option key={item.ID} value={item.ID}>
+                              {item.name}
+                            </option>
+                          ))}
+                      </select>
+
+                      {(() => {
+                        const selected = categories1.find(
+                          (item) => item.ID === Number(productData.categoryId1)
+                        );
+                        return selected ? (
+                          <Icon
+                            icon={selected.icon}
+                            width="20"
+                            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                          />
+                        ) : (
+                          <Icon
+                            icon="mdi:tag"
+                            width="20"
+                            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                          />
+                        );
+                      })()}
+
+                      <Icon
+                        icon="mdi:chevron-down"
+                        width="20"
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+                {/* หมวดหมู่รอง */}
+                <div className="relative">
+                  <label
+                    htmlFor="categoryId2"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    หมวดหมู่รอง
+                  </label>
+                  <div className="relative">
+                    <div className="relative">
+                      <select
+                        id="categoryId2"
+                        name="categoryId2"
+                        value={productData.categoryId2}
+                        onChange={handleChange}
+                        className="w-full pl-10 pr-10 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 appearance-none transition duration-200 bg-white"
+                        required
+                      >
+                        <option value="">เลือกหมวดหมู่(รอง)</option>
                         {categories.length > 0 &&
                           categories.map((item) => (
                             <option key={item.ID} value={item.ID}>
@@ -315,7 +389,7 @@ const page = () => {
 
                       {(() => {
                         const selected = categories.find(
-                          (item) => item.ID === Number(productData.categoryId)
+                          (item) => item.ID === Number(productData.categoryId2)
                         );
                         return selected ? (
                           <Icon
@@ -472,7 +546,7 @@ const page = () => {
                   type="button"
                   className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700"
                 >
-                   แปลงเป็น Key / Value
+                  แปลงเป็น Key / Value
                 </button>
 
                 <div className="space-y-4">

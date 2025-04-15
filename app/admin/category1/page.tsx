@@ -23,9 +23,12 @@ const AddCategory = () => {
   const [icon, setIcon] = useState("");
   const user = useStore((s) => s.user);
 
+  console.log(categories);
+  
+
   const getcategory = async () => {
     try {
-      const res = await fetch("http://localhost:8080/category", {
+      const res = await fetch("http://localhost:8080/category1", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -45,7 +48,7 @@ const AddCategory = () => {
   const hdlSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:8080/category", {
+      const res = await fetch("http://localhost:8080/category1", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -80,7 +83,7 @@ const AddCategory = () => {
       <div className="min-h-screen bg-gray-100 p-6">
         <header className="max-w-4xl mx-auto mb-6">
           <h2 className="text-3xl font-bold text-gray-800">
-            เพิ่มหมวดหมู่ใหม่
+            เพิ่มหมวดหมู่หลักใหม่
           </h2>
         </header>
 

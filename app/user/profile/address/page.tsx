@@ -14,7 +14,6 @@ const Page = () => {
   const [isHydrated, setIsHydrated] = useState(false);
   const path = usePathname();
 
-
   useEffect(() => {
     setIsHydrated(true);
   }, []);
@@ -46,7 +45,7 @@ const Page = () => {
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
-              className="w-[460px] mx-auto backdrop-blur-sm rounded-xl p-6 shadow-lg relative overflow-hidden border border-transparent"
+              className="md:w-[460px] w-[350px]  mx-auto backdrop-blur-sm rounded-xl p-6 shadow-lg relative overflow-hidden border border-transparent"
               style={{
                 background: "rgba(255, 255, 255, 0.1)",
               }}
@@ -111,6 +110,35 @@ const Page = () => {
                   >
                     <Icon icon="raphael:fave" width="24" height="24" />
                     รายการโปรด
+                  </Link>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="flex items-center justify-center"
+            >
+              <div className="flex flex-col items-center justify-center">
+                <div>
+                  <h1 className="text-md text-gray-600 font-semibold">
+                    คุณยังไม่มีที่อยู่จัดส่ง
+                  </h1>
+                </div>
+                <div className="mt-2">
+                  <Link
+                    href={"/user/profile/address/create"}
+                    className="w-[200px] h-[56px] border-red-500 text-red-600 gap-2 flex items-center justify-center border rounded-md font-bold cursor-pointer"
+                  >
+                    <Icon
+                      icon="line-md:plus"
+                      width="24"
+                      height="24"
+                      color="red"
+                    />
+                    เพิ่มที่อยู่ใหม่
                   </Link>
                 </div>
               </div>

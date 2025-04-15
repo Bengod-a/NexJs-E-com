@@ -139,7 +139,7 @@ const NavBarAdmin = () => {
                 </li>
                 <li>
                   <Link
-                    href="/admin/category"
+                    href="/admin/category1"
                     className="flex gap-2 items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
                   >
                     <Icon
@@ -147,7 +147,20 @@ const NavBarAdmin = () => {
                       width="24"
                       height="24"
                     />
-                    เพิ่มหมวดหมู่
+                    เพิ่มหมวดหมู่1
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/admin/category2"
+                    className="flex gap-2 items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
+                  >
+                    <Icon
+                      icon="carbon:collapse-categories"
+                      width="24"
+                      height="24"
+                    />
+                    เพิ่มหมวดหมู่2
                   </Link>
                 </li>
                 <li>

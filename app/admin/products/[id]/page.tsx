@@ -16,15 +16,17 @@ const EditProductPage = () => {
     name: "",
     price: "",
     quantity: "",
-    categoryId: "",
+    categoryId1: "",
+    categoryId2: "",
   });
+  const [categories1, setCategories1] = useState([]) as any;
   const [categories, setCategories] = useState([]) as any;
-  const [imageFiles, setImageFiles] = useState([]);
   const [specs, setSpecs] = useState([]);
   const [isupload, setIsupload] = useState(false);
   const [imageUrl, setImageUrl] = useState<string[]>([]);
   const [existingImages, setExistingImages] = useState([]);
-  const [isdeleteimage, setIsdeleteimage] = useState(false);
+
+  console.log(productData);
 
   const getProductById = async () => {
     try {
@@ -44,8 +46,11 @@ const EditProductPage = () => {
           name: product.name || "",
           price: product.price ? product.price.toString() : "",
           quantity: product.quantity ? product.quantity.toString() : "",
-          categoryId: product.categories[0]?.ID
-            ? product.categories[0].ID.toString()
+          categoryId1: product.categories1[0]?.ID
+            ? product.categories1[0].ID.toString()
+            : "",
+          categoryId2: product.categories2[0]?.ID
+            ? product.categories2[0].ID.toString()
             : "",
         });
         setExistingImages(product.images || []);
@@ -57,7 +62,24 @@ const EditProductPage = () => {
     }
   };
 
-
+  const getCategories1 = async () => {
+    try {
+      const res = await fetch("http://localhost:8080/category1", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCategories1(data.data || []);
+      } else {
+        console.log(data.error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const getCategories = async () => {
     try {
       const res = await fetch("http://localhost:8080/category", {
@@ -80,6 +102,7 @@ const EditProductPage = () => {
   useEffect(() => {
     if (id) {
       getProductById();
+      getCategories1();
       getCategories();
     }
   }, [id]);
@@ -94,7 +117,6 @@ const EditProductPage = () => {
 
   const handleImageChange = async (e: any) => {
     const files: any = Array.from(e.target.files);
-    setImageFiles(files);
 
     setIsupload(true);
     try {
@@ -153,7 +175,6 @@ const EditProductPage = () => {
 
   const handleDeleteExistingImage = async (imageId: any) => {
     if (!confirm("คุณแน่ใจหรือไม่ว่าต้องการลบรูปภาพนี้?")) return;
-    setIsdeleteimage(true);
     const toastId = toast.loading("กำลังลบรูปและสินค้า...");
     try {
       const res = await fetch(
@@ -182,8 +203,6 @@ const EditProductPage = () => {
       }
     } catch (error) {
       console.log(error);
-    } finally {
-      setIsdeleteimage(false);
     }
   };
 
@@ -194,7 +213,8 @@ const EditProductPage = () => {
       formData.append("name", productData.name);
       formData.append("price", productData.price);
       formData.append("quantity", productData.quantity);
-      formData.append("categoryId", productData.categoryId);
+      formData.append("categoryId1", productData.categoryId1);
+      formData.append("categoryId2", productData.categoryId2);
 
       if (imageUrl) {
         imageUrl.forEach((file: any) => {
@@ -291,59 +311,33 @@ const EditProductPage = () => {
 
                 <div className="relative">
                   <label
-                    htmlFor="quantity"
+                    htmlFor="categoryId1"
                     className="block text-sm font-medium text-gray-700 mb-1"
                   >
-                    จำนวนสินค้า
-                  </label>
-                  <div className="relative">
-                    <input
-                      id="quantity"
-                      name="quantity"
-                      type="number"
-                      value={productData.quantity}
-                      onChange={handleChange}
-                      placeholder="จำนวนสินค้า"
-                      className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 transition duration-200"
-                      required
-                    />
-                    <Icon
-                      icon="mdi:cart"
-                      width="20"
-                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                    />
-                  </div>
-                </div>
-
-                <div className="relative">
-                  <label
-                    htmlFor="categoryId"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    หมวดหมู่
+                    หมวดหมู่(หลัก)
                   </label>
                   <div className="relative">
                     <select
-                      id="categoryId"
-                      name="categoryId"
-                      value={productData.categoryId}
+                      id="categoryId1"
+                      name="categoryId1"
+                      value={productData.categoryId1}
                       onChange={handleChange}
                       className="w-full pl-10 pr-10 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 appearance-none transition duration-200 bg-white"
                       required
                     >
                       <option value="">เลือกหมวดหมู่</option>
-                      {categories.map((category: any) => (
+                      {categories1.map((category: any) => (
                         <option key={category.ID} value={category.ID}>
                           {category.name}
                         </option>
                       ))}
                     </select>
-                    {productData.categoryId && categories.length > 0 ? (
+                    {productData.categoryId1 && categories.length > 0 ? (
                       <Icon
                         icon={
-                          categories.find(
+                          categories1.find(
                             (item: any) =>
-                              item.ID.toString() === productData.categoryId
+                              item.ID.toString() === productData.categoryId1
                           )?.icon || "mdi:tag"
                         }
                         width="20"
@@ -365,6 +359,86 @@ const EditProductPage = () => {
                       icon="mdi:chevron-down"
                       width="20"
                       className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <label
+                    htmlFor="categoryId2"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    หมวดหมู่(รอง)
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="categoryId2"
+                      name="categoryId2"
+                      value={productData.categoryId2}
+                      onChange={handleChange}
+                      className="w-full pl-10 pr-10 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 appearance-none transition duration-200 bg-white"
+                      required
+                    >
+                      <option value="">เลือกหมวดหมู่</option>
+                      {categories.map((category: any) => (
+                        <option key={category.ID} value={category.ID}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                    {productData.categoryId2 && categories.length > 0 ? (
+                      <Icon
+                        icon={
+                          categories.find(
+                            (item: any) =>
+                              item.ID.toString() === productData.categoryId2
+                          )?.icon || "mdi:tag"
+                        }
+                        width="20"
+                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      />
+                    ) : (
+                      <Icon
+                        icon="mdi:tag"
+                        width="20"
+                        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                      />
+                    )}
+                    <Icon
+                      icon="mdi:chevron-down"
+                      width="20"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"
+                    />
+                    <Icon
+                      icon="mdi:chevron-down"
+                      width="20"
+                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="relative">
+                  <label
+                    htmlFor="quantity"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    จำนวนสินค้า
+                  </label>
+                  <div className="relative">
+                    <input
+                      id="quantity"
+                      name="quantity"
+                      type="number"
+                      value={productData.quantity}
+                      onChange={handleChange}
+                      placeholder="จำนวนสินค้า"
+                      className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 placeholder-gray-400 transition duration-200"
+                      required
+                    />
+                    <Icon
+                      icon="mdi:cart"
+                      width="20"
+                      className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
                     />
                   </div>
                 </div>

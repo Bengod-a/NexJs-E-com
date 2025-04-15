@@ -14,6 +14,9 @@ const ProductListPage = () => {
   const [isdeleteimage, setIsdeleteimage] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
+  console.log(products);
+  
+
   const getProducts = async () => {
     if (loading) return;
 
@@ -172,8 +175,8 @@ const ProductListPage = () => {
                         {product.price.toLocaleString()}
                       </td>
                       <td className="px-6 py-4 text-gray-900">
-                        {product.categories && product.categories.length > 0
-                          ? product.categories[0].name
+                        {product.categories1 && product.categories1.length > 0
+                          ? product.categories1[0].name
                           : "-"}
                       </td>
                       <td className="px-6 py-4 text-gray-900">
