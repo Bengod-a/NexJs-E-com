@@ -11,9 +11,11 @@ interface User {
   lastname: string;
   image?: string;
   enabled: boolean;
-  favorite: Favorite[];
   phonenumber: string;
+  orders: []
   address: []
+  favorite: Favorite[];
+  carts: []
 }
 
 

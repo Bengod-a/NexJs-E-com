@@ -15,6 +15,8 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import Loading from "../../../components/loadeing/Loader";
 import { Icon } from "@iconify/react/dist/iconify.js";
+import useStore from "../../../store/store";
+import { toast } from "react-toastify";
 
 const page = () => {
   const { id } = useParams();
@@ -22,8 +24,13 @@ const page = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
   const [isloading, setIsLoading] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const cartTotal = quantity * product.price;
+  const user = useStore((s) => s.user);
 
-  const increment = () => setQuantity(quantity + 1);
+  const increment = () => {
+    const newQuantity = quantity + 1;
+    setQuantity(newQuantity);
+  };
   const decrement = () => setQuantity(quantity > 1 ? quantity - 1 : 1);
 
   const GetProductById = async () => {
@@ -42,7 +49,66 @@ const page = () => {
     }
   };
 
-  console.log(product);
+  const AddTocate = async (product: any) => {
+    try {
+      useStore.setState((s: any) => {
+        const currentCarts = Array.isArray(s.user?.carts) ? s.user.carts : [];
+
+        const existingIndex = currentCarts.findIndex(
+          (item: any) => item.ID === product.ID
+        );
+
+        let updatedCarts;
+
+        if (existingIndex !== -1) {
+          const currentQty = currentCarts[existingIndex].quantity;
+          if (currentQty + quantity > product.quantity) {
+            toast.error("สินค้าไม่พอ");
+            return s;
+          }
+          updatedCarts = [...currentCarts];
+          updatedCarts[existingIndex] = {
+            ...updatedCarts[existingIndex],
+            quantity:
+              (updatedCarts[existingIndex].quantity || quantity) + quantity,
+            price:
+              (updatedCarts[existingIndex].price || product.price) + cartTotal,
+          };
+        } else {
+          updatedCarts = [...currentCarts, { ...product, quantity: 1 }];
+        }
+
+
+        return {
+          user: {
+            ...s.user,
+            carts: updatedCarts,
+          },
+        };
+      });
+      const res = await fetch("http://localhost:8080/addtocart", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({
+          productid: product.ID,
+          price: product.price,
+          quantity: quantity,
+          id: user?.id,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     GetProductById();
@@ -136,8 +202,7 @@ const page = () => {
                             <>
                               <h1 className="text-[34px] gap-2 font-bold text-red-500">
                                 {product.price && "฿"}
-                                {product.price &&
-                                  product.price.toLocaleString()}
+                                {product.price && cartTotal.toLocaleString()}
                               </h1>
                               <p className="text-[12px] flex items-center gap-2 text-gray-500 mt-1">
                                 <Icon
@@ -184,7 +249,10 @@ const page = () => {
                         {product && product.price && (
                           <>
                             <div className="flex flex-col md:flex-row items-center mt-10 gap-4">
-                              <button className="w-full md:w-[274px] h-[50px] border border-red-500 rounded-md cursor-pointer text-red-500 hover:bg-red-500 duration-300 hover:text-white">
+                              <button
+                                onClick={() => AddTocate(product)}
+                                className="w-full md:w-[274px] h-[50px] border border-red-500 rounded-md cursor-pointer text-red-500 hover:bg-red-500 duration-300 hover:text-white"
+                              >
                                 หยิบใส่ตะกร้า
                               </button>
                               <button className="w-full md:w-[274px] h-[50px] rounded-md cursor-pointer text-white bg-[#D4001A] duration-300 hover:text-white">
