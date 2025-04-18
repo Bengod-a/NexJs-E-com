@@ -26,8 +26,6 @@ const HotSale = () => {
     }
   };
 
-  console.log(products);
-
   useEffect(() => {
     GetBesSaleProduct();
   }, []);
@@ -95,9 +93,13 @@ const HotSale = () => {
                   <p className="mt-4 text-sm text-gray-800 text-left line-clamp-1 leading-4 font-semibold max-w-[300px]">
                     {item.name}
                   </p>
-                  <p className="text-[12px] flex items-center text-[#00000073] text-left leading-4 font-semibold max-w-[300px]">
-                    {item.specs?.[0].value} |  {item.specs?.[1].value} | {item.specs?.[3].value} | {item.specs?.[5].value} |  {item.specs?.[11].value} |  {item.specs?.[15].value} |
-                  </p>
+                  {item.specs && item.specs.length > 1 && (
+                    <p className="text-[12px] flex items-center text-[#00000073] text-left leading-4 font-semibold max-w-[300px]">
+                      {item.specs?.[0].value} | {item.specs?.[1].value} |{" "}
+                      {item.specs?.[3].value} | {item.specs?.[5].value} |{" "}
+                      {item.specs?.[11].value} | {item.specs?.[15].value} |
+                    </p>
+                  )}
 
                   <div className="mt-5 flex items-center w-full">
                     <span className="text-base font-bold text-red-500">

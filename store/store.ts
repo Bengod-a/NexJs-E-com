@@ -10,18 +10,19 @@ interface User {
   role: string;
   lastname: string;
   image?: string;
-  enabled: boolean;
   phonenumber: string;
-  orders: []
-  address: []
+  orders: [];
+  address: [];
   favorite: Favorite[];
-  carts: []
+  carts: any[];
+  productOnCart: any[];
 }
-
 
 const store = (set: any) => ({
   user: null as User | null,
   token: null,
+  carts: [] as any[],
+  productOnCart: [] as any[],
   actionLogin: async (email: string, password: string, setIsopen: any) => {
     const res = await fetch("http://localhost:8080/login", {
       method: "POST",
@@ -34,13 +35,14 @@ const store = (set: any) => ({
 
     if (res.ok) {
       const data = await res.json();
-      console.log(data);
       localStorage.setItem("token", data.token);
       toast.success(data.message);
       setIsopen(false);
       set({
         user: data.user,
         token: data.token,
+        carts: data.user.carts || [],
+        productOnCart: data.user.productOnCart || [],
       });
     } else {
       const data = await res.json();

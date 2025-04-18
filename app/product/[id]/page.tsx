@@ -26,6 +26,7 @@ const page = () => {
   const [quantity, setQuantity] = useState(1);
   const cartTotal = quantity * product.price;
   const user = useStore((s) => s.user);
+  const [cartCount, setCartCount] = useState<number[]>([]);
 
   const increment = () => {
     const newQuantity = quantity + 1;
@@ -51,41 +52,6 @@ const page = () => {
 
   const AddTocate = async (product: any) => {
     try {
-      useStore.setState((s: any) => {
-        const currentCarts = Array.isArray(s.user?.carts) ? s.user.carts : [];
-
-        const existingIndex = currentCarts.findIndex(
-          (item: any) => item.ID === product.ID
-        );
-
-        let updatedCarts;
-
-        if (existingIndex !== -1) {
-          const currentQty = currentCarts[existingIndex].quantity;
-          if (currentQty + quantity > product.quantity) {
-            toast.error("สินค้าไม่พอ");
-            return s;
-          }
-          updatedCarts = [...currentCarts];
-          updatedCarts[existingIndex] = {
-            ...updatedCarts[existingIndex],
-            quantity:
-              (updatedCarts[existingIndex].quantity || quantity) + quantity,
-            price:
-              (updatedCarts[existingIndex].price || product.price) + cartTotal,
-          };
-        } else {
-          updatedCarts = [...currentCarts, { ...product, quantity: 1 }];
-        }
-
-
-        return {
-          user: {
-            ...s.user,
-            carts: updatedCarts,
-          },
-        };
-      });
       const res = await fetch("http://localhost:8080/addtocart", {
         method: "POST",
         headers: {
@@ -95,12 +61,27 @@ const page = () => {
         body: JSON.stringify({
           productid: product.ID,
           price: product.price,
+          count: Number(cartCount),
           quantity: quantity,
           id: user?.id,
         }),
       });
       const data = await res.json();
       if (res.ok) {
+        const productOnCart = data.product;
+        useStore.setState((s: any) => {
+          const existing =
+            s.user?.productOnCart?.filter(
+              (item: any) => item.ID !== productOnCart.ID
+            ) || [];
+          return {
+            user: {
+              ...s.user,
+              carts: data.cart,
+              productOnCart: [...existing, productOnCart],
+            },
+          };
+        });
         toast.success(data.message);
       } else {
         toast.error(data.message);
@@ -110,6 +91,13 @@ const page = () => {
     }
   };
 
+  const productOnCart = user?.productOnCart || [];
+  useEffect(() => {
+    const itemInCart = productOnCart.find(
+      (item: any) => item.product_id === product.ID
+    );
+    setCartCount(itemInCart ? itemInCart.count : 0);
+  }, [productOnCart, product.ID]);
   useEffect(() => {
     GetProductById();
   }, [id]);
@@ -172,7 +160,7 @@ const page = () => {
                   </div>
                 </div>
 
-                <div className="max-w-[564px] mt-16">
+                <div className="max-w-[564px] mt-16 mx-auto">
                   <div className="flex flex-col">
                     {product && (
                       <div>
