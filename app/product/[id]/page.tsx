@@ -28,6 +28,11 @@ const page = () => {
   const user = useStore((s) => s.user);
   const [cartCount, setCartCount] = useState<number[]>([]);
 
+  const isFavorite = user?.favorite.some(
+    (item: any) => item.product_id === product.ID
+  );
+
+
   const increment = () => {
     const newQuantity = quantity + 1;
     setQuantity(newQuantity);
@@ -81,6 +86,63 @@ const page = () => {
               productOnCart: [...existing, productOnCart],
             },
           };
+        });
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const AddToFavorite = async (product: any) => {
+    try {
+      const isFavorite = user?.favorite.some(
+        (item: any) => item.product_id === product.ID
+      );
+      const res = await fetch(
+        isFavorite
+          ? `http://localhost:8080/deletefavorite`
+          : `http://localhost:8080/addtofavorite`,
+        {
+          method: isFavorite ? "DELETE" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({
+            productid: Number(id),
+            id: user?.id,
+          }),
+        }
+      );
+      const data = await res.json();
+      if (res.ok) {
+        const favorite = data.data?.product_id;
+        useStore.setState((s: any) => {
+          const existing =
+            s.user?.favorite?.filter(
+              (item: any) => item.product_id !== favorite
+            ) || [];
+          if (isFavorite) {
+            return {
+              user: {
+                ...s.user,
+                favorite: existing,
+              },
+            };
+          } else {
+            return {
+              user: {
+                ...s.user,
+                favorite: [
+                  ...existing,
+                  { favoriteID: data.data?.ID, product_id: favorite },
+                ],
+              },
+            };
+          }
         });
         toast.success(data.message);
       } else {
@@ -259,9 +321,17 @@ const page = () => {
                                 />
                                 เปรียบเทียบสินค้า
                               </button>
-                              <button className="flex items-center gap-2 cursor-pointer hover:text-red-500 duration-300">
-                                <Icon icon="la:heart" width="20" height="20" />
-                                เพิ่มเป็นรายการโปรด
+                              <button
+                                onClick={() => AddToFavorite(product)}
+                                className="flex items-center gap-2 cursor-pointer hover:text-red-500 duration-300"
+                              >
+                                <Icon
+                                  icon={isFavorite ? "mdi:heart" : "line-md:heart"}
+                                  width="20"
+                                  height="20"
+                                  color={isFavorite ? "red" : "black"}
+                                />
+                                {isFavorite ?"เพิ่มเป็นรายการโปรดแล้ว" : "เพิ่มเป็นรายการโปรด"}
                               </button>
                             </div>
                           </>
